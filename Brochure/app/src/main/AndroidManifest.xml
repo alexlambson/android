@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.alex.brochure" >
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".Page01"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Page02"
+            android:label="@string/title_activity_page02" >
+        </activity>
+        <activity
+            android:name=".Page03"
+            android:label="@string/title_activity_page03" >
+        </activity>
+        <activity
+            android:name=".Page04"
+            android:label="@string/title_activity_page04" >
+        </activity>
+    </application>
+
+</manifest>

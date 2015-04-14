@@ -1,0 +1,67 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" tools:context=".Page01">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:paddingLeft="10dp"
+        android:src="@drawable/page01_bg"
+        android:id="@+id/imageView" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/linearLayout"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/imageView"
+        android:layout_marginTop="50dp"
+        android:background="#ebff241e"
+        android:weightSum="1">
+
+        <ImageView
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="80dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/logo"
+            android:alpha="1.0"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/page01_logoText"
+            android:textColor="@android:color/primary_text_dark"
+            android:textSize="23dp"
+            android:gravity="left"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="40dp"
+            android:layout_weight="0.82"
+            android:textIsSelectable="false" />
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="55dp"
+        android:layout_marginBottom="66dp"
+        android:layout_alignParentBottom="true"
+        android:background="#99ffffff"
+        android:id="@+id/buttonContainer">
+
+        <ImageView
+            android:layout_width="55dp"
+            android:id="@+id/nextButton"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:src="@drawable/next_button"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:alpha="0.4"/>
+    </RelativeLayout>
+
+</RelativeLayout>

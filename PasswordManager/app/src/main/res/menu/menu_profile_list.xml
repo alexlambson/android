@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.alex.passwordmanager.ProfileList">
+    <item android:id="@+id/add_new_profile_button" android:title="Add new profile"
+        android:orderInCategory="0" />
+    <item android:id="@+id/sync_profiles_button" android:title="Sync with server"
+        android:orderInCategory="1"/>
+    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+        android:orderInCategory="100" app:showAsAction="never" />
+</menu>

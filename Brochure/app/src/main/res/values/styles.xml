@@ -1,0 +1,20 @@
+<resources>
+
+    <drawable name="actionbar_background">#ff0000</drawable>
+    <!-- Base application theme. -->
+    <!-- the theme applied to the application or activity -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/RedActionBar</item>
+        <item name="actionBarStyle">@style/RedActionBar</item>
+    </style>
+
+    <!-- ActionBar styles -->
+    <style name="RedActionBar" parent="Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@drawable/actionbar_background</item>
+        <item name="background">@drawable/actionbar_background</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+
+
+</resources>

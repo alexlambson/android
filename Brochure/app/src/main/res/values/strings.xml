@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Brochure</string>
+    <string name="action_settings">Settings</string>
+    <string name="page01_logoText">Dixie State University\nWe Do!</string>
+    <string name="title_activity_page02">What is DSUSA?</string>
+    <string name="WhatIsDSUSA">DSUSA stands for "Dixie State University Student Association," colloquially known as the student government.\nWe do everything from planning parties to representing students on the Academic Integrity Committee</string>
+    <string name="page02_header">We Do...</string>
+    <string name="title_activity_page03">Branches</string>
+    <string name="page03_header">Branches of DSUSA</string>
+    <string name="page03_body">Student Life:\nThis branch plans all of the parties\n\nAcademic Senate:\nSponsors student academic interests and Student of the Semester\n\nService:\nSponsors and staffs service projects in the community\n\nClubs:\nCharters, pays for, and manages Dixie clubs\n\nPublic Relations:\nGets people to the events put on by the other branches</string>
+    <string name="title_activity_page04">Contact Us</string>
+    <string name="hello_world">Hello world!</string>
+
+</resources>
