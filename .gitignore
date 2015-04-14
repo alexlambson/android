@@ -1,9 +1,9 @@
-PasswordManager/.idea/
 MyFirstApp/
 Password/
-*.gradle
-*.bat
-PasswordManager/gradlew
-PasswordManager/gradle/
-PasswordManager/gradle.properties
-Brochure/.idea/
+
+*/build/
+*/.gradle/
+*.iml
+*/local.properties
+
+
