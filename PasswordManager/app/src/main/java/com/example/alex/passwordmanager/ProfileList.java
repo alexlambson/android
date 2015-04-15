@@ -1,7 +1,11 @@
 package com.example.alex.passwordmanager;
 
 import android.app.Application;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,13 +16,19 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileList extends ActionBarActivity implements AdapterView.OnItemClickListener{
     ListView mainListView;
     ProfileAdapter mProfileAdapter;
-
+    public static final String UPDATE_INTENT = "update-the-ui-list";
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // update ui
+            update();
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +40,7 @@ public class ProfileList extends ActionBarActivity implements AdapterView.OnItem
         mProfileAdapter = new ProfileAdapter(this, R.layout.profile_list_item, this.getProfileList());
         mainListView.setAdapter(mProfileAdapter);
         mainListView.setOnItemClickListener(this);
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter(UPDATE_INTENT));
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -90,5 +101,11 @@ public class ProfileList extends ActionBarActivity implements AdapterView.OnItem
     }
     public void updateProfile(Profile profile, int position){
         ((Globals) this.getApplication()).updateProfile(profile);
+    }
+    @Override
+    protected void onPause() {
+        // Unregister since the activity is about to be closed.
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
     }
 }

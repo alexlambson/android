@@ -82,7 +82,7 @@ public class ProfileEditorFragment extends Fragment implements View.OnClickListe
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         String currentDate = dateFormat.format(calendar.getTime());
         if(selectedProfile.modified != null) {
-            Log.d("Profile update old time: ", selectedProfile.modified);
+            Log.d("Profile old time: ", selectedProfile.modified);
         }
         selectedProfile.url = url.getText().toString();
         selectedProfile.title = title.getText().toString();

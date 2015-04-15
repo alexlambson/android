@@ -1,8 +1,10 @@
 package com.example.alex.passwordmanager;
 
 import android.app.Application;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
@@ -21,6 +23,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
@@ -36,6 +39,7 @@ public class Globals extends Application {
     public void addProfile(Profile profile){
         sqlManager.insertProfile(profile);
         sqlManager.close();
+        this.startup();
     }
     public void startup(){
         mProfileList = new ArrayList<Profile>();
@@ -68,9 +72,13 @@ public class Globals extends Application {
     }
     public void updateProfile(Profile profile){
         sqlManager.updateProfile(profile);
+        sqlManager.close();
+        this.startup();
     }
     public void deleteProfile(Profile profile){
         sqlManager.deleteProfile(profile);
+        sqlManager.close();
+        this.startup();
     }
     public void syncProfiles(){
         this.startup();
@@ -78,13 +86,16 @@ public class Globals extends Application {
     }
     private void finishSync(String string){
         if(!string.equals("")){
-            Log.d("html finished", string);
             JSONObject jsonObject;
             try {
                 jsonObject = new JSONObject(string);
-                setLastSync(jsonObject.getString("previous_sync_at"));
+                setLastSync(getCurrentDateString());
+                Log.d("json response:", string);
+                this.updateProfilesFromResponse(jsonObject);
                 this.markComplete();
+                this.updateUIList();
             } catch (JSONException e) {
+                Log.d("Sync failed: ", string);
                 e.printStackTrace();
                 this.setLastModified("");
                 this.setLastSync("");
@@ -105,13 +116,92 @@ public class Globals extends Application {
             this.updateProfile(profile);
         }
     }
+    private void updateProfilesFromResponse(JSONObject jsonObject){
+        if(!jsonObject.has("profiles")){
+            Log.d("updating: ", "no profiles returned");
+            return;
+        }
+        try {
+            JSONArray jsonArray = jsonObject.getJSONArray("profiles");
+            ArrayList<Profile> tempProfiles = jsonToProfiles(jsonArray);
+            //check if profiles need updated or inserted
+            ArrayList<Profile> currentProfiles = this.getProfileList();
+            for(int i = 0; i < tempProfiles.size(); i++){
+                boolean newProfile = true;
+                Profile tempProfile = tempProfiles.get(i);
+
+                for(int j = 0; j < currentProfiles.size(); j++){
+                    Profile currentProfile = currentProfiles.get(j);
+                    if(tempProfile.uuid.equals(currentProfile.uuid)){
+                        newProfile = false;
+                        this.updateProfile(tempProfile);
+                        break;
+                    }
+                }
+                if(newProfile){
+                    this.addProfile(tempProfile);
+                }
+            }
+        } catch (JSONException e) {
+            Log.d("failed to get profiles", "ughhhh");
+            e.printStackTrace();
+        }
+    }
+    private void updateUIList(){
+        Intent intent = new Intent(ProfileList.UPDATE_INTENT);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+    private ArrayList<Profile> jsonToProfiles(JSONArray jsonArray) throws JSONException {
+        ArrayList<Profile> tempProfiles = new ArrayList<>();
+        JSONObject jsonObject;
+        Profile tempProfile = new Profile();
+        for(int i = 0; i < jsonArray.length(); i++){
+            tempProfile = new Profile();
+            jsonObject = jsonArray.getJSONObject(i);
+            Log.d("json before crash:", jsonObject.getString("uuid"));
+            tempProfile.uuid = UUID.fromString(jsonObject.getString("uuid"));
+            tempProfile.title = jsonObject.getString("name");
+            tempProfile.username = jsonObject.getString("username");
+            tempProfile.url = jsonObject.getString("url");
+            tempProfile.scheme = jsonObject.getString("scheme");
+            tempProfile.length = jsonObject.getInt("length");
+            if(jsonObject.has("generation")){
+                tempProfile.generation = jsonObject.getInt("generation");
+            }
+            if(jsonObject.has("lower")){
+                tempProfile.lower = jsonObject.getBoolean("lower");
+            }
+            if(jsonObject.has("upper")){
+                tempProfile.upper = jsonObject.getBoolean("upper");
+            }
+            if(jsonObject.has("digits")){
+                tempProfile.digits = jsonObject.getBoolean("digits");
+            }
+            if(jsonObject.has("punctuation")){
+                tempProfile.punctuation = jsonObject.getBoolean("punctuation");
+            }
+            if(jsonObject.has("spaces")){
+                tempProfile.spaces = jsonObject.getBoolean("spaces");
+            }
+            if(jsonObject.has("include")){
+                tempProfile.include = jsonObject.getString("include");
+            }
+            if(jsonObject.has("exclude")){
+                tempProfile.include = jsonObject.getString("exclude");
+            }
+            tempProfile.modified = "";
+            tempProfiles.add(tempProfile);
+        }
+        Log.d("temp profiles", tempProfiles.toString());
+        return tempProfiles;
+    }
     private JSONObject makeJSONRequest(String currentDate) throws Exception{
         Log.d("html", "in json");
         String greatestDate = "";
         JSONObject reqValue = new JSONObject();
         JSONArray profilesjson = new JSONArray();
 
-        reqValue.put("name", "alex@gmail.org");
+        reqValue.put("name", "phillip@gmail.org");
         reqValue.put("verify", this.verifyPassword());
         for(int i = 0; i < this.mProfileList.size(); i++){
             Profile profile = this.mProfileList.get(i);
@@ -147,12 +237,10 @@ public class Globals extends Application {
         reqValue.put("synced_at", this.getCurrentDateString());
         if(!this.getLastSync().equals("")){
             reqValue.put("previous_sync_at", this.getLastSync());
-            Log.d("Previous sync set to: ", this.getLastSync());
         }
         if(this.getLastModified().equals("") || this.getLastModified().compareToIgnoreCase(greatestDate) < 0){
             reqValue.put("modified_at", greatestDate);
             setLastModified(greatestDate);
-            Log.d("Last Modified set to: ", greatestDate);
         }
         Log.d("html", "json 2 " + reqValue.toString());
         return reqValue;

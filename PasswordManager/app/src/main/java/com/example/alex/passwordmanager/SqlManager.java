@@ -91,7 +91,7 @@ public class SqlManager extends SQLiteOpenHelper {
         ContentValues newContent = addColumns(profile, false);
         long success = getWritableDatabase().update(TABLE_PROFILES, newContent, UUIDCOL+"='"+profile.uuid.toString()+"'", null);
         getWritableDatabase().close();
-        Log.d("Database helper profile generation: ", profile.generation + " " + profile.modified);
+        //Log.d("Database generation: ", profile.generation + " " + profile.modified);
         return success;
     }
     public long deleteProfile(Profile profile) {
