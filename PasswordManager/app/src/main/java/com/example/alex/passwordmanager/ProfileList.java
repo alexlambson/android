@@ -15,10 +15,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.List;
 
-public class ProfileList extends ActionBarActivity implements AdapterView.OnItemClickListener{
+public class ProfileList extends ActionBarActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
     ListView mainListView;
     ProfileAdapter mProfileAdapter;
     public static final String UPDATE_INTENT = "update-the-ui-list";
@@ -40,6 +43,7 @@ public class ProfileList extends ActionBarActivity implements AdapterView.OnItem
         mProfileAdapter = new ProfileAdapter(this, R.layout.profile_list_item, this.getProfileList());
         mainListView.setAdapter(mProfileAdapter);
         mainListView.setOnItemClickListener(this);
+        mainListView.setOnItemLongClickListener(this);
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter(UPDATE_INTENT));
     }
     @Override
@@ -107,5 +111,36 @@ public class ProfileList extends ActionBarActivity implements AdapterView.OnItem
         // Unregister since the activity is about to be closed.
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+    }
+    private String getMasterPassword(){
+        String password = ((Globals) this.getApplication()).getMasterPassword();
+        return password;
+    }
+    private String generatePasswordAt(int position){
+        Profile profile = this.getProfileList().get(position);
+        String password = "";
+        try {
+            password = profile.generate(this.getMasterPassword());
+        } catch (GeneralSecurityException e) {
+            Log.d("generatePassword:", "Failed in profileList generatePassword");
+            e.printStackTrace();
+        }
+        return password;
+    }
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        String password = this.generatePasswordAt(position);
+        int sdk = android.os.Build.VERSION.SDK_INT;
+        if(sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
+            android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            clipboard.setText(password);
+        } else {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            android.content.ClipData clip = android.content.ClipData.newPlainText("password", password);
+            clipboard.setPrimaryClip(clip);
+        }
+        Toast.makeText(getApplicationContext(), "Copied password to clipboard:\n" + password,
+                Toast.LENGTH_LONG).show();
+        return false;
     }
 }
