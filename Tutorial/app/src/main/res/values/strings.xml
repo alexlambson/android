@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Books</string>
+    <string name="prettyname">Alex</string>
+    <string name="button">Search</string>
+    <string name="hint">Type</string>
+    <string name="defaultMessage">No Books Selected</string>
+    <string name="activity_details">Book Details</string>
+    <string name="hashtag">#useHashTagsResponsibly</string>
+    <string name="textViewMessage">Book Search Engine</string>
+    <string name="defaultTitle">Title Loading</string>
+</resources>
